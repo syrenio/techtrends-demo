@@ -89,8 +89,15 @@ def create():
 @app.route('/healthz', methods=['GET'])
 def healthz():
     app.logger.info('healthz')
+    connection = get_db_connection()
+    status = "OK - healthy"
+    try:
+        connection.execute('SELECT * FROM posts').fetchall()
+        connection.close()
+    except:
+        status = "ERROR - unhealthy"
     data = {
-        "result": "OK - healthy"
+        "result": status
     }
     return jsonify(data), 200, {'Content-Type': 'application/json'}
 
