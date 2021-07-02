@@ -2,6 +2,7 @@ from datetime import time
 import logging
 from os import name
 import sqlite3
+import sys
 
 from flask import Flask, jsonify, json, render_template, request, url_for, redirect, flash
 from werkzeug.exceptions import abort
@@ -115,7 +116,11 @@ def metrics():
 
 # start the application on port 3111
 if __name__ == "__main__":
+    stdhandler = logging.StreamHandler(sys.stdout) 
+    errhandler = logging.StreamHandler(sys.stderr)
+    filehandler = logging.FileHandler("debug.log")
+    handlers = [ stdhandler, errhandler, filehandler]
     FORMAT = '%(levelname)s:%(name)s:%(asctime)s, %(message)s'
     DATEFORMAT = '%d/%m/%Y, %H:%M:%S'
-    logging.basicConfig(level=logging.DEBUG, format=FORMAT, datefmt=DATEFORMAT)
+    logging.basicConfig(level=logging.DEBUG, format=FORMAT, datefmt=DATEFORMAT, handlers=handlers)
     app.run(host='0.0.0.0', port='3111')
